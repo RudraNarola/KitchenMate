@@ -3,6 +3,7 @@ from flask_cors import CORS
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+import platform
 
 # Load environment variables
 load_dotenv()
@@ -14,7 +15,7 @@ CORS(app)
 # MongoDB connection
 try:
     client = MongoClient(os.getenv('MONGODB_URI'))
-    db = client['kitchenmate']
+    db = client['project0']
     client.server_info()
     print("Successfully connected to MongoDB!")
 except Exception as e:
@@ -53,5 +54,8 @@ def home():
     }), 200
 
 if __name__ == '__main__':
-    # Run the app on localhost
-    app.run(host='127.0.0.1', port=5000, debug=True)
+    # Handle Windows-specific socket issues
+    if platform.system() == 'Windows':
+        app.run(host='127.0.0.1', port=5000, debug=True, use_reloader=False)
+    else:
+        app.run(host='127.0.0.1', port=5000, debug=True)
