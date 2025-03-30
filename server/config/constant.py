@@ -44,6 +44,14 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-# MODELS CONFIGURATION
-OBJECT_DETECTION_MODEL = 'server/models/FirstModule/object_detection/FridgeVision_Dataset_detection_n_2.pt'
-SPOILAGE_CLASSIFIER_MODEL = 'server/models/FirstModule/spoilage_classifier/resnet50_fruit_spoilage.pth'
+# Get absolute path to the server folder
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MODELS_DIR = os.path.join(BASE_DIR, "models")
+
+
+# Define each model’s path
+OBJECT_DETECTION_MODEL = os.path.join(
+    MODELS_DIR, "weight", "FridgeVision_Dataset_detection_n_2.pt")
+
+SPOILAGE_CLASSIFIER_MODEL = os.path.join(
+    MODELS_DIR, "weight", "resnet50_fruit_spoilage.pth")

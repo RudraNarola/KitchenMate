@@ -1,22 +1,23 @@
 from flask import Flask
 from flask_cors import CORS
 from api import api_bp
-import config
-from config import DEBUG, PORT, HOST
+from config.constant import DEBUG, PORT, HOST, MAX_CONTENT_LENGTH, VIDEO_FOLDER, LIVE_FOLDER, IMAGE_FOLDER
+
 
 def create_app():
     app = Flask(__name__)
-    
+
     # Register configuration
-    app.config['MAX_CONTENT_LENGTH'] = config.MAX_CONTENT_LENGTH
-    
+    app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
+
     # Enable CORS
     CORS(app)
-    
+
     # Register API blueprint
     app.register_blueprint(api_bp)
-    
+
     return app
+
 
 if __name__ == "__main__":
     app = create_app()

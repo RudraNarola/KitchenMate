@@ -1,6 +1,7 @@
 from ultralytics import YOLO
 import cv2
 import os
+from config.constant import OBJECT_DETECTION_MODEL
 
 
 def object_detection(image_path):
@@ -11,8 +12,7 @@ def object_detection(image_path):
 
     image = cv2.imread(image_path)
 
-    model = YOLO(
-        "/Users/jaivik/Downloads/mit-main/server/models/FirstModule/object_detection/FridgeVision_Dataset_detection_n_2.pt")
+    model = YOLO(OBJECT_DETECTION_MODEL)
 
     # Run inference
     results = model(image)

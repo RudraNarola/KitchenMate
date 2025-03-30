@@ -1,6 +1,6 @@
 import google.generativeai as genai
 import json
-from config import GEMINI_API_KEY, GEMINI_MODEL_NAME
+from config.constant import GEMINI_API_KEY, GEMINI_MODEL_NAME
 
 # Configure Gemini API
 genai.configure(api_key=GEMINI_API_KEY)
@@ -11,6 +11,7 @@ try:
 except Exception as e:
     print(f"Error initializing model: {e}")
     raise
+
 
 def generate_ai_response(prompt):
     """

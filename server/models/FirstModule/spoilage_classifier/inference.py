@@ -7,10 +7,11 @@ import argparse
 from torchvision import models
 import cv2
 import numpy as np
+from config.constant import SPOILAGE_CLASSIFIER_MODEL
 
 
 class SpoilageClassifier:
-    def __init__(self, model_path, device=None):
+    def __init__(self, model_path=SPOILAGE_CLASSIFIER_MODEL, device=None):
         if device is None:
             self.device = torch.device(
                 "cuda" if torch.cuda.is_available() else "cpu")

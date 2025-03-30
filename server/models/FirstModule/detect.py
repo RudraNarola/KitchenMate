@@ -3,10 +3,11 @@ import os
 import tempfile
 from models.FirstModule.object_detection.inference import object_detection
 from models.FirstModule.spoilage_classifier.inference import SpoilageClassifier
-# from server.config.config import SPOILAGE_CLASSIFIER_MODEL, OBJECT_DETECTION_MODEL
+from config.constant import OBJECT_DETECTION_MODEL, SPOILAGE_CLASSIFIER_MODEL
 
-OBJECT_DETECTION_MODEL = '/Users/jaivik/Downloads/mit-main/server/models/FirstModule/object_detection/FridgeVision_Dataset_detection_n_2.pt'
-SPOILAGE_CLASSIFIER_MODEL = '/Users/jaivik/Downloads/mit-main/server/models/FirstModule/spoilage_classifier/resnet50_fruit_spoilage.pth'
+
+# OBJECT_DETECTION_MODEL = 'server/models/FirstModule/object_detection/FridgeVision_Dataset_detection_n_2.pt'
+# SPOILAGE_CLASSIFIER_MODEL = 'R:/Projects/hacknuthon/KitchenMate/server/models/FirstModule/spoilage_classifier/resnet50_fruit_spoilage.pth'
 
 
 def analyze_ingredients(image_path):

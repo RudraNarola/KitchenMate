@@ -1,7 +1,7 @@
 import os
 import datetime
 from werkzeug.utils import secure_filename
-from config import logger, VIDEO_FOLDER, LIVE_FOLDER, IMAGE_FOLDER
+from config.constant import logger, VIDEO_FOLDER, LIVE_FOLDER, IMAGE_FOLDER
 
 
 def save_uploaded_file(file, folder_type="live"):

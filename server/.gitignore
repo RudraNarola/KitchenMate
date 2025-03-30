@@ -72,7 +72,20 @@ coverage.xml
 
 # Documentation
 docs/_build/
-.jpg
+
 *.jpeg
 *.png
-.csv
+*.jpg
+*.gif
+*.svg
+
+// ...existing code...
+
+# Model weights (large files)
+models/weight/
+models/weight/**/*
+models/**/*.pt
+models/**/*.pth
+
+storage/**/*
+storage/
