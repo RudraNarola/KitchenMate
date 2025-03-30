@@ -1,0 +1,23 @@
+# Web Framework
+Flask
+Flask-Cors
+Werkzeug
+
+# AI & Data Processing
+google-generativeai
+pandas
+openpyxl
+
+# Environment Variables
+python-dotenv
+
+# Utilities
+requests
+numpy
+
+# Development Tools
+pytest
+python-dateutil
+pymongo
+opencv-python
+ultralytics
