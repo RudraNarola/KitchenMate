@@ -19,7 +19,7 @@ def upload_live_frame_handler():
         filename, filepath = save_uploaded_file(frame, folder_type="live")
         
         # Detect ingredients
-        detected_ingredients = detector.detect_from_frame(filepath)
+        detected_ingredients = detector.detect_from_image(filepath)
         
         return jsonify({
             "message": "Frame uploaded successfully", 
@@ -69,7 +69,7 @@ def upload_video_handler():
         filename, filepath = save_uploaded_file(video, folder_type="video")
         
         # Process the video
-        detected_ingredients = detector.detect_from_video(filepath)
+        detected_ingredients = detector.detect_from_image(filepath)
         
         return jsonify({
             "message": "Video uploaded and analyzed successfully", 

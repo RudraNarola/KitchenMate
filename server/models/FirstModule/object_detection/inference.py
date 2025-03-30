@@ -12,7 +12,7 @@ def object_detection(image_path):
     image = cv2.imread(image_path)
 
     model = YOLO(
-        "R:/Projects/hacknuthon/KitchenMate/server/models/FirstModule/object_detection/FridgeVision_Dataset_detection_n_2.pt")
+        "/Users/jaivik/Downloads/mit-main/server/models/FirstModule/object_detection/FridgeVision_Dataset_detection_n_2.pt")
 
     # Run inference
     results = model(image)

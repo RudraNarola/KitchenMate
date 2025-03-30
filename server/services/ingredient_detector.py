@@ -9,16 +9,16 @@ class IngredientDetector:
 
     def detect_from_image(self, image_path):
         result = detect.analyze_ingredients(image_path)
-        print("REsult", result)
+        # print("REsult", result)
         return result
         return generate_mock_ingredients(3, 6)
 
     def detect_from_frame(self, frame_path):
         result = detect.analyze_ingredients(frame_path)
-        print("REsult", result)
+        # print("REsult", result)
         return result
 
     def detect_from_video(self, video_path):
         result = detect.analyze_ingredients(video_path)
-        print("REsult", result)
+        # print("REsult", result)
         return result

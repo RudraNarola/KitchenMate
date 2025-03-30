@@ -21,7 +21,7 @@ def create_app():
 if __name__ == "__main__":
     app = create_app()
     print(f"Server running on http://{HOST}:{PORT}")
-    print(f"Videos will be saved to: {config.VIDEO_FOLDER}")
-    print(f"Live frames will be saved to: {config.LIVE_FOLDER}")
-    print(f"Images will be saved to: {config.IMAGE_FOLDER}")
+    # print(f"Videos will be saved to: {config.VIDEO_FOLDER}")
+    # print(f"Live frames will be saved to: {config.LIVE_FOLDER}")
+    # print(f"Images will be saved to: {config.IMAGE_FOLDER}")
     app.run(host=HOST, port=PORT, debug=DEBUG)
