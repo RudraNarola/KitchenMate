@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardContent,
@@ -11,6 +11,20 @@ interface StatCardProps {
   title: string;
   value: string | number;
   icon: React.ReactNode;
+}
+
+interface IngredientData {
+  detected_objects: any[];
+  summary: {
+    [key: string]: {
+      Fresh: number;
+      Spoiled: number;
+      Unknown: number;
+    };
+  };
+  total_fresh: number;
+  total_items: number;
+  total_spoiled: number;
 }
 
 function StatCard({ title, value, icon }: StatCardProps) {
@@ -28,16 +42,34 @@ function StatCard({ title, value, icon }: StatCardProps) {
 }
 
 export function QuickStats() {
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalConsumption, setTotalConsumption] = useState(0);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const storedData = localStorage.getItem('detectedIngredients');
+      if (storedData) {
+        try {
+          const parsedData: IngredientData = JSON.parse(storedData);
+          setTotalItems(parsedData.total_items || 0);
+          setTotalConsumption(parsedData.total_fresh || 0);
+        } catch (error) {
+          console.error('Error parsing localStorage data:', error);
+        }
+      }
+    }
+  }, []);
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
       <StatCard 
         title="Total Ingredients" 
-        value={24} 
+        value={totalItems} 
         icon={<ShoppingBasket className="h-4 w-4 text-gray-400" />} 
       />
       <StatCard 
-        title="Total Consumption" 
-        value="1,234" 
+        title="Total Fresh Items" 
+        value={totalConsumption} 
         icon={<LineChart className="h-4 w-4 text-gray-400" />} 
       />
     </div>

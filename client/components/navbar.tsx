@@ -114,6 +114,18 @@ export function Navbar({ activePage, onPageChange }: NavbarProps) {
               <span>Menu Optimize</span>
             </Link>
             <Link
+              href="/get_dish_generated"
+              className={`flex items-center space-x-2 text-sm font-medium transition-colors ${
+                activePage === "ai-dishes"
+                  ? "text-purple-400"
+                  : "text-gray-400 hover:text-gray-300"
+              }`}
+              onClick={() => onPageChange("ai-dishes")}
+            >
+              <Sparkles className="h-5 w-5" />
+              <span>Generate Dish</span>
+            </Link>
+            <Link
               href="/get_ingredients"
               className={`flex items-center space-x-2 text-sm font-medium transition-colors ${
                 activePage === "get_ingredients"
