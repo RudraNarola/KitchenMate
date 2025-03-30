@@ -57,7 +57,7 @@ export function Navbar({ activePage, onPageChange }: NavbarProps) {
               <span>Demand Analysis</span>
             </Link>
             <Link
-              href="/menu-optimization"
+              href="/get_optimized_menu"
               className={`flex items-center space-x-2 text-sm font-medium transition-colors ${
                 activePage === "menu"
                   ? "text-purple-400"

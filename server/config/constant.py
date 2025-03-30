@@ -1,3 +1,4 @@
+# filepath: /Users/jaivik/Downloads/mit-main/server/config.py
 import os
 import logging
 from dotenv import load_dotenv
@@ -13,25 +14,21 @@ STORAGE_DIR = os.path.join(BASE_DIR, "storage")
 VIDEO_FOLDER = os.path.join(STORAGE_DIR, "uploaded_videos")
 LIVE_FOLDER = os.path.join(STORAGE_DIR, "live_frames")
 IMAGE_FOLDER = os.path.join(STORAGE_DIR, "uploaded_images")
-UPLOAD_FOLDER = os.path.join(STORAGE_DIR, "uploaded_csv")
-ALLOWED_EXTENSIONS = {'csv'}
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'jpg', 'jpeg', 'png', 'mp4', 'avi', 'mov'}
 
 # API Configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 GEMINI_MODEL_NAME = "gemini-2.0-flash"
 
 # Flask Configuration
-DEBUG = True
-PORT = 8080
-HOST = '0.0.0.0'
+DEBUG = os.getenv("DEBUG", "True").lower() == "true"
+PORT = int(os.getenv("PORT", "8080"))
+HOST = os.getenv("HOST", "0.0.0.0")
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
 
-# Upload Configuration
-
-
-# Create required directories
-for folder in [UPLOAD_FOLDER, VIDEO_FOLDER, LIVE_FOLDER, IMAGE_FOLDER]:
-    os.makedirs(folder, exist_ok=True)
+# Database Configuration
+MONGO_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/")
 
 # High risk ingredients
 HIGH_RISK_INGREDIENTS = {
@@ -44,6 +41,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+# Create required directories
+for folder in [UPLOAD_FOLDER, VIDEO_FOLDER, LIVE_FOLDER, IMAGE_FOLDER, STORAGE_DIR]:
+    os.makedirs(folder, exist_ok=True)
 # Get absolute path to the server folder
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODELS_DIR = os.path.join(BASE_DIR, "models")

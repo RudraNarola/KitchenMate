@@ -18,3 +18,6 @@ numpy
 # Development Tools
 pytest
 python-dateutil
+pymongo
+opencv-python
+ultralytics

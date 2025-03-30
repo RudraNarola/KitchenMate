@@ -18,7 +18,13 @@ interface ActionCardProps {
   icon: React.ReactNode;
 }
 
-function ActionCard({ title, description, href, buttonText, icon }: ActionCardProps) {
+function ActionCard({
+  title,
+  description,
+  href,
+  buttonText,
+  icon,
+}: ActionCardProps) {
   return (
     <Card className="bg-gray-900 border-gray-800">
       <CardHeader>
@@ -50,7 +56,7 @@ export function QuickActions() {
       <ActionCard
         title="Menu Optimization"
         description="Optimize your menu with AI recommendations"
-        href="/menu-optimization"
+        href="/get_optimized_menu"
         buttonText="Optimize Menu"
         icon={<ChefHat className="mr-2 h-4 w-4" />}
       />
