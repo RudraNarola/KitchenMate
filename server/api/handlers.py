@@ -1,5 +1,6 @@
 from venv import logger
 from flask import jsonify, request
+from services.ai_dish_service import generate_ai_response, get_surplus_ingredients
 from utils.file_utils import save_uploaded_file
 from services.ingredient_detector import IngredientDetector
 from services.file_service import allowed_file, save_upload_file, process_excel_file
@@ -158,6 +159,145 @@ def dish_detail_handler(dish_id):
 def dish_delete_handler(dish_id):
     """Handle requests to delete a specific dish."""
     return delete_dish(db, dish_id)
+
+def dish_generation_handler():
+    if request.method == 'OPTIONS':
+        return jsonify({"success": True})
+        
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({
+                "success": False,
+                "message": "No data provided"
+            })
+            
+        generation_type = data.get('type')
+        message = data.get('message', '')
+        
+        if not generation_type:
+            return jsonify({
+                "success": False,
+                "message": "Generation type is required"
+            })
+            
+        if generation_type == 'inventory':
+            # Generate dishes based on current inventory
+            surplus_ingredients = get_surplus_ingredients()
+            prompt = f"""Create 2 creative dishes using these surplus ingredients: {surplus_ingredients}.
+            and recipe for creating this dish: {message}
+            
+            Guidelines:
+            - mandatory is to create a recipe for the dish
+            - Use short, catchy names (max 3-4 words)
+            - Use realistic market prices for ingredients
+            - Include all ingredients, even small amounts
+            - Cost should be between $10-30 per dish
+            - Profit margin should be 20-35%
+            - For each ingredient, specify exact quantity and unit (e.g., grams, cups, pieces)
+            
+            Format the response as JSON with this structure:
+            {{
+                "dishes": [
+                    {{
+                        "name": "string",
+                        "description": "string",
+                        "recipe": {{
+                            "steps": [
+                                "Step 1: ...",
+                                "Step 2: ...",
+                                "Step 3: ..."
+                            ]
+                        }},
+                        "ingredients": [
+                            {{
+                                "name": "string",
+                                "quantity": number,
+                                "unit": "string"
+                            }}
+                        ],
+                        "cost": number,
+                        "profit_margin": number,
+                        "special_occasion": boolean
+                    }}
+                ]
+            }}"""
+            
+        elif generation_type == 'custom':
+            # Generate dishes based on custom ingredients
+            ingredients = data.get('ingredients', [])
+            
+            if not ingredients:
+                return jsonify({
+                    "success": False,
+                    "message": "No ingredients provided"
+                })
+            
+            prompt = f"""Create 2 creative dishes using these ingredients: {ingredients} and recipe for creating this dish: {message}
+            
+            Guidelines:
+            - mandatory is to create a recipe for the dish
+            - Use short, catchy names (max 3-4 words)
+            - Use realistic market prices for ingredients
+            - Include all ingredients, even small amounts
+            - Cost should be between $10-30 per dish
+            - Profit margin should be 20-35%
+            
+            Format the response as JSON with this structure:
+            {{
+                "dishes": [
+                    {{
+                        "name": "string",
+                        "description": "string",
+                        "recipe": {{
+                            "steps": [
+                                "Step 1: ...",
+                                "Step 2: ...",
+                                "Step 3: ..."
+                            ]
+                        }},
+                        "ingredients": [
+                            {{
+                                "name": "string",
+                                "quantity": number,
+                                "unit": "string"
+                            }}
+                        ],
+                        "cost": number,
+                        "profit_margin": number,
+                        "special_occasion": boolean
+                    }}
+                ]
+            }}"""
+        else:
+            return jsonify({
+                "success": False,
+                "message": "Invalid generation type"
+            })
+
+        # Generate response from Gemini API
+        response = generate_ai_response(prompt)
+        
+        if not response or "dishes" not in response:
+            return jsonify({
+                "success": False,
+                "message": "Failed to generate dishes"
+            })
+
+        return jsonify({
+            "success": True,
+            "dishes": response["dishes"]
+        })
+
+    except Exception as e:
+        print(f"Error in generate_dishes: {str(e)}")
+        return jsonify({
+            "success": False,
+            "message": str(e)
+        })
+
+
+
 
 
 def menu_handler():

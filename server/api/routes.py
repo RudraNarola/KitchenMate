@@ -2,6 +2,7 @@
 from flask import Blueprint
 from api.handlers import (
     analyze_image_handler,
+    dish_generation_handler,
     upload_live_frame_handler,
     upload_image_handler,
     upload_video_handler,
@@ -31,6 +32,7 @@ api_bp.route("/optimize-menu", methods=["POST"])(optimize_menu_handler)
 api_bp.route("/dishes", methods=["GET", "POST"])(dish_handler)
 api_bp.route("/dishes/<dish_id>", methods=["GET"])(dish_detail_handler)
 api_bp.route("/dishes/<dish_id>", methods=["DELETE"])(dish_delete_handler)
+api_bp.route("/generate-dishes", methods=["POST"])(dish_generation_handler)
 
 # Define routes for menus
 
