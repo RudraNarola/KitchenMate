@@ -6,9 +6,9 @@ export interface Ingredient {
   name: string;
   quantity: number;
   unit: string;
-  spoiled?: boolean;
+  spoiled: boolean;  // Changed from optional to required
+ // Keep if you're using it
 }
-
 interface IngredientsTableProps {
   ingredients: Ingredient[] | null;
   isLoading?: boolean;

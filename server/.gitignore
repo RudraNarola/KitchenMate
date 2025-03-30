@@ -72,3 +72,7 @@ coverage.xml
 
 # Documentation
 docs/_build/
+.jpg
+*.jpeg
+*.png
+.csv

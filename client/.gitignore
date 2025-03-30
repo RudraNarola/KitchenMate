@@ -61,3 +61,7 @@ storybook-static
 *.swp
 *.swo
 .history
+.jpg
+*.jpeg
+*.png
+.csv
