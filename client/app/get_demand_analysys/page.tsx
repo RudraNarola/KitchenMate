@@ -4,10 +4,11 @@ import { Navbar } from "@/components/navbar";
 import UploadSection from "@/components/demand/UploadSection";
 import StatsSummary from "@/components/demand/StatsSummary";
 import DataTable from "@/components/demand/DataTable";
+import ForecastDashboard from "@/components/demand/ForecastDashboard";
 import useFileUpload from "@/hooks/useFileUpload";
 
 export default function DemandPage() {
-  const [activePage, setActivePage] = useState("demand");
+  const [activePage, setActivePage] = useState("get_demand_analysys");
   
   const {
     file,
@@ -15,19 +16,36 @@ export default function DemandPage() {
     season,
     loading,
     error,
+    forecastData,
     setSeason,
     handleFileChange,
     handleUpload,
     setFile
   } = useFileUpload();
 
-  // Calculate summary stats
-  const totalConsumption = data.reduce(
-    (sum, item) => sum + item.consumption,
+  // Make sure data is an array before using array methods
+  const safeData = Array.isArray(data) ? data : [];
+
+  // Calculate summary stats safely
+  const totalConsumption = safeData.reduce(
+    (sum, item) => sum + (item.consumption || 0),
     0
   );
-  const highRiskCount = data.filter((item) => item.high_risk).length;
-  const uniqueIngredients = [...new Set(data.map((item) => item.ingredient))].length;
+  const highRiskCount = safeData.filter((item) => item.high_risk).length;
+  const uniqueIngredients = [...new Set(safeData.map((item) => item.ingredient || ""))].length;
+
+  // Transform forecast data for components
+  const predictedMeals = forecastData?.top_meal_details?.map(meal => ({
+    id: Number(meal[0]),
+    name: String(meal[1]),
+    cuisine: String(meal[2]),
+    predictedOrders: Number(meal[3])
+  })) || [];
+  
+  const ingredientRequirements = forecastData?.ingredient_requirements?.map(item => ({
+    name: String(item[0]),
+    quantity: Number(item[1])
+  })) || [];
 
   return (
     <div className="min-h-screen bg-black text-gray-200">
@@ -64,25 +82,34 @@ export default function DemandPage() {
           </div>
         </div>
 
-        {data.length > 0 && (
-          <>
-            <div className="bg-gray-900 rounded-xl overflow-hidden border border-gray-700 shadow-lg mb-8">
-              <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4">
-                <h2 className="text-xl font-bold text-center text-white">
-                  Analysis Results
-                </h2>
-              </div>
-              
-              <div className="p-6">
-                <StatsSummary 
-                  uniqueIngredients={uniqueIngredients}
-                  totalConsumption={totalConsumption}
-                  highRiskCount={highRiskCount}
-                />
-                <DataTable data={data} />
-              </div>
+        {/* Show forecast dashboard if we have forecast data */}
+        {forecastData && (
+          <div className="mb-8">
+            <ForecastDashboard
+              predictedMeals={predictedMeals}
+              ingredientRequirements={ingredientRequirements}
+            />
+          </div>
+        )}
+
+        {/* Show the original consumption data table if available */}
+        {safeData.length > 0 && (
+          <div className="bg-gray-900 rounded-xl overflow-hidden border border-gray-700 shadow-lg mb-8">
+            <div className="bg-gradient-to-r from-purple-600 to-blue-600 p-4">
+              <h2 className="text-xl font-bold text-center text-white">
+                Historical Data Analysis
+              </h2>
             </div>
-          </>
+            
+            <div className="p-6">
+              <StatsSummary 
+                uniqueIngredients={uniqueIngredients}
+                totalConsumption={totalConsumption}
+                highRiskCount={highRiskCount}
+              />
+              <DataTable data={safeData} />
+            </div>
+          </div>
         )}
       </div>
     </div>

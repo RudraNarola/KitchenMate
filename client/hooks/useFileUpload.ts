@@ -5,14 +5,23 @@ export type DataItem = {
   date: string;
   ingredient: string;
   consumption: number;
-  type: "daily" | "monthly";
+  type?: "daily" | "monthly";
   high_risk: boolean;
+};
+
+type IngredientRequirement = [string, number];
+type MealPrediction = [number, string, string, number];
+
+type ForecastData = {
+  ingredient_requirements: IngredientRequirement[];
+  top_meal_details: MealPrediction[];
 };
 
 export default function useFileUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [data, setData] = useState<DataItem[]>([]);
-  const [season, setSeason] = useState("");
+  const [forecastData, setForecastData] = useState<ForecastData | null>(null);
+  const [season, setSeason] = useState("winter");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -48,7 +57,29 @@ export default function useFileUpload() {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-      setData(response.data);
+
+      // Handle historical consumption data
+      if (response.data.consumption_data) {
+        setData(response.data.consumption_data);
+      } else if (Array.isArray(response.data)) {
+        // Fallback if the API returns direct array
+        setData(response.data);
+      }
+
+      // Handle forecast data
+      if (response.data.ingredient_requirements && response.data.top_meal_details) {
+        setForecastData({
+          ingredient_requirements: response.data.ingredient_requirements,
+          top_meal_details: response.data.top_meal_details
+        });
+      }
+      // Handle nested data structure
+      else if (response.data.data && response.data.data.ingredient_requirements) {
+        setForecastData({
+          ingredient_requirements: response.data.data.ingredient_requirements,
+          top_meal_details: response.data.data.top_meal_details
+        });
+      }
     } catch (error: any) {
       setError(
         error.response?.data?.message ||
@@ -69,6 +100,7 @@ export default function useFileUpload() {
     season,
     loading,
     error,
+    forecastData,
     setFile,
     setSeason,
     handleFileChange,

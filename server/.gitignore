@@ -89,3 +89,4 @@ models/**/*.pth
 
 storage/**/*
 storage/
+*.csv

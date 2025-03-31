@@ -1,17 +1,20 @@
 from venv import logger
 from flask import jsonify, request
+from models.SecondModule.predicit_ingredient import predict_ingredient
 from services.ai_dish_service import generate_ai_response, get_surplus_ingredients
 from utils.file_utils import save_uploaded_file
 from services.ingredient_detector import IngredientDetector
 from services.file_service import allowed_file, save_upload_file, process_excel_file
 from services.menu_optimization import optimize_menu
-from services.dish_service import add_dish, get_all_dishes, get_dish,delete_dish
+from services.dish_service import add_dish, get_all_dishes, get_dish, delete_dish
 from services.menu_service import analyze_image, create_menu, get_all_menus, get_menu, update_menu, delete_menu
 from services.daily_special import process_daily_specials
 from services.cost_effective import analyze_menu_costs
 from utils.db import db
 from bson import ObjectId
 
+import json
+import numpy as np
 
 # Initialize the detector service
 detector = IngredientDetector()
@@ -106,6 +109,8 @@ def upload_file_handler():
     """Handler for Excel file uploads"""
     from config.constant import logger
 
+    from config.constant import logger
+
     if request.method == "OPTIONS":
         return "", 200
 
@@ -127,12 +132,45 @@ def upload_file_handler():
         # Save and process the file
         filepath = save_upload_file(file)
         logger.debug(f"File saved to: {filepath}")
+        # print(f"File saved to")
 
         # Process the file (currently returns dummy data)
-        result = process_excel_file(filepath)
-        logger.debug(f"Successfully processed {len(result)} records")
+        result = predict_ingredient(filepath)
 
-        return jsonify(result)
+        logger.debug(f"Result: {result}")
+        logger.debug(f"Type of result: {type(result)}")
+
+        print(result["ingredient_requirements"])
+        print(result["top_meal_details"])
+        print(type(result["top_meal_details"]))
+        print(type(result["ingredient_requirements"]))
+
+        # Create a custom encoder to handle NumPy types
+        class NumpyEncoder(json.JSONEncoder):
+            def default(self, obj):
+                if isinstance(obj, np.integer):
+                    return int(obj)
+                elif isinstance(obj, np.floating):
+                    return float(obj)
+                elif isinstance(obj, np.ndarray):
+                    return obj.tolist()
+                return super(NumpyEncoder, self).default(obj)
+
+        # Convert NumPy types to native Python types
+        ingredient_requirements = json.loads(json.dumps(
+            result["ingredient_requirements"], cls=NumpyEncoder))
+        top_meal_details = json.loads(json.dumps(
+            result["top_meal_details"], cls=NumpyEncoder))
+
+        # Return the processed result
+        return jsonify({
+            "success": True,
+            "data": {
+                "ingredient_requirements": ingredient_requirements,
+                "top_meal_details": top_meal_details
+            },
+            "message": "File processed successfully"
+        })
 
     except Exception as e:
         logger.error(f"Error processing file: {str(e)}")

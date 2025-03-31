@@ -46,7 +46,7 @@ export default function DailySpecials() {
       if (typeof window !== 'undefined') {
         const storedIngredients = localStorage.getItem('detectedIngredients');
         if (!storedIngredients) {
-          alert('Please scan ingredients first before accessing daily specials!');
+       //   alert('Please scan ingredients first before accessing daily specials!');
           router.push('/get_ingredients');
           return;
         }
