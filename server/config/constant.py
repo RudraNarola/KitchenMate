@@ -16,6 +16,7 @@ LIVE_FOLDER = os.path.join(STORAGE_DIR, "live_frames")
 IMAGE_FOLDER = os.path.join(STORAGE_DIR, "uploaded_images")
 UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
 ALLOWED_EXTENSIONS = {'csv', 'xlsx', 'jpg', 'jpeg', 'png', 'mp4', 'avi', 'mov'}
+GRAPH_FOLDER = os.path.join(STORAGE_DIR, "graph_images")
 
 # API Configuration
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -25,7 +26,7 @@ GEMINI_MODEL_NAME = "gemini-2.0-flash"
 DEBUG = os.getenv("DEBUG", "True").lower() == "true"
 PORT = int(os.getenv("PORT", "8080"))
 HOST = os.getenv("HOST", "0.0.0.0")
-MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB
+MAX_CONTENT_LENGTH = 160 * 1024 * 1024  # 16MB
 
 # Database Configuration
 MONGO_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017/")
@@ -42,7 +43,7 @@ logger = logging.getLogger(__name__)
 
 
 # Create required directories
-for folder in [UPLOAD_FOLDER, VIDEO_FOLDER, LIVE_FOLDER, IMAGE_FOLDER, STORAGE_DIR]:
+for folder in [UPLOAD_FOLDER, VIDEO_FOLDER, LIVE_FOLDER, IMAGE_FOLDER, STORAGE_DIR, GRAPH_FOLDER]:
     os.makedirs(folder, exist_ok=True)
 # Get absolute path to the server folder
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
