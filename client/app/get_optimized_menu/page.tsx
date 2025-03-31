@@ -71,10 +71,10 @@ export default function MenuOptimizationPage() {
       <div className="max-w-6xl mx-auto p-4 sm:p-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">
-            Menu Optimization
+            Menu and Dish Creation
           </h1>
           <p className="text-gray-400 mt-2">
-            AI-powered menu optimization for better profitability and creativity
+            AI-powered menu and dish creation for better profitability and creativity
           </p>
         </div>
 

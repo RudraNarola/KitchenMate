@@ -111,7 +111,7 @@ export function Navbar({ activePage, onPageChange }: NavbarProps) {
               onClick={() => onPageChange("menu")}
             >
               <ChefHat className="h-5 w-5" />
-              <span>Menu Optimize</span>
+              <span>Menu & Dish Creation</span>
             </Link>
             <Link
               href="/get_dish_generated"

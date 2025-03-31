@@ -52,7 +52,7 @@ MODELS_DIR = os.path.join(BASE_DIR, "models")
 
 # Define each model’s path
 OBJECT_DETECTION_MODEL = os.path.join(
-    MODELS_DIR, "weight", "FridgeVision_Dataset_detection_n_2.pt")
+    MODELS_DIR, "weight", "custom_mix_dataset_yolov8_e10.pt")
 
 SPOILAGE_CLASSIFIER_MODEL = os.path.join(
-    MODELS_DIR, "weight", "resnet50_fruit_spoilage.pth")
+    MODELS_DIR, "weight", "resnet50_modify_fruit_spoilage.pth")
