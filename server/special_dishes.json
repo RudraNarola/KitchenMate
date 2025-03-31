@@ -1,24 +1,24 @@
 {
     "dishes": [
         {
-            "name": "burger",
-            "ingredients": {
-                "Tomato": 5,
-                "Onion": 4,
-                "Carrot": 3,
-                "Rice": 4,
-                "Salt": 1
-            }
-        },
-        {
             "name": "pizza",
             "ingredients": {
                 "Tomato": 5,
+                "Rice": 250,
                 "Onion": 4,
                 "Garlic": 2,
                 "Carrot": 3,
-                "Rice": 4,
-                "Salt": 1
+                "Capsicum": 3
+            }
+        },
+        {
+            "name": "burger",
+            "ingredients": {
+                "Tomato": 5,
+                "Rice": 250,
+                "Onion": 4,
+                "Carrot": 3,
+                "Potato": 6
             }
         }
     ]
