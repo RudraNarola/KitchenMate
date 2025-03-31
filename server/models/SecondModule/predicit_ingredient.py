@@ -251,6 +251,14 @@ def analyze_and_forecast(df):
     requirements_figure = visualize_ingredient_requirements(
         ingredient_requirements)
 
+    # Get top 2 ingredients by consumption
+    top_ingredients = sorted(ingredient_requirements.items(), key=lambda x: x[1], reverse=True)[:2]
+    top_ingredient_figures = {ing: ingredient_figures[ing] for ing, _ in top_ingredients}
+
+    # Get top 2 meals by popularity
+    top_2_meals = top_meals[:2]
+    top_meal_figures = {meal_id: meal_forecasts[meal_id] for meal_id, _ in top_2_meals}
+
     # Display top 5 most popular meals for next week
     print("\nTop 5 Predicted Popular Meals for Next Week:")
     top_5_meals = top_meals[:5]
@@ -271,15 +279,14 @@ def analyze_and_forecast(df):
             predict_ingredient_list.append([ingredient, quantity])
 
     return ({
-        # 'category_forecasts': category_forecasts,
-        # 'ingredient_forecasts': ingredient_forecasts,
-        # 'meal_forecasts': meal_forecasts,
         'ingredient_requirements': predict_ingredient_list,
         'top_meal_details': meal_details,
+        'top_ingredients': top_ingredients,
+        'top_meals': top_2_meals
     }, {
         'figures': {
-            'categories': category_figures,
-            'ingredients': ingredient_figures,
+            'top_ingredients': top_ingredient_figures,
+            'top_meals': top_meal_figures,
             'requirements': requirements_figure
         }
     })
@@ -303,28 +310,32 @@ def predict_ingredient(path_to_csv):
 
     results, res_figure = analyze_and_forecast(center_df)
 
-    # for key, value in results.items():
-    #     print("types", key, type(key), type(value))
-    #     for k, v in value.items():
-    #         # print("key", k, "value", v)
-    #         print("types", type(k), type(v))
-    #         break
+    # Save top 2 ingredient forecast figures
+    for ingredient, fig in res_figure['figures']['top_ingredients'].items():
+        if isinstance(fig, plt.Figure):
+            path = os.path.join(GRAPH_FOLDER, f'top_ingredient_forecast_{ingredient}.png')
+            print(f"Saving ingredient graph to: {path}")
+            fig.savefig(path)
+            plt.close(fig)
 
-    # Save figures if needed
-    for category, fig in res_figure['figures']['categories'].items():
-        # path =
-        path = os.path.join(GRAPH_FOLDER, f'category_forecast_{category}.png')
-        fig.savefig(path)
+    # Save top 2 meal forecast figures
+    for meal_id, fig in res_figure['figures']['top_meals'].items():
+        if isinstance(fig, plt.Figure):
+            meal_info = center_df[center_df['meal_id'] == meal_id].iloc[0]
+            path = os.path.join(GRAPH_FOLDER, f'top_meal_forecast_{meal_id}_{meal_info["category"]}.png')
+            print(f"Saving meal graph to: {path}")
+            fig.savefig(path)
+            plt.close(fig)
 
-    for ingredient, fig in res_figure['figures']['ingredients'].items():
-        path = os.path.join(
-            GRAPH_FOLDER, f'ingredient_forecast_{ingredient}.png')
-        fig.savefig(path)
-
-    path = os.path.join(GRAPH_FOLDER, 'ingredient_requirements.png')
-    res_figure['figures']['requirements'].savefig(path)
+    # Save requirements figure
+    if isinstance(res_figure['figures']['requirements'], plt.Figure):
+        path = os.path.join(GRAPH_FOLDER, 'ingredient_requirements.png')
+        print(f"Saving requirements graph to: {path}")
+        res_figure['figures']['requirements'].savefig(path)
+        plt.close(res_figure['figures']['requirements'])
 
     print("Figures saved successfully.")
+    print(f"GRAPH_FOLDER contents: {os.listdir(GRAPH_FOLDER)}")
 
     return results
 

@@ -8,4 +8,4 @@ class Ingredient:
             "name": self.name,
             "unit": self.unit,
             "quantity": self.quantity,
-        }
+        }   

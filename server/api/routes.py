@@ -1,5 +1,5 @@
 # filepath: /Users/jaivik/Downloads/mit-main/server/api/routes.py
-from flask import Blueprint
+from flask import Blueprint, request, jsonify, send_file
 from api.handlers import (
     analyze_image_handler,
     dish_generation_handler,
@@ -15,8 +15,13 @@ from api.handlers import (
     menu_detail_handler,
     dish_delete_handler,
     daily_specials_handler,
-    optimize_cost_handler
+    optimize_cost_handler,
+    predict_ingredient_handler,
+    get_graphs_handler,
+    serve_graph
 )
+import os
+from config.constant import GRAPH_FOLDER
 
 # Create a blueprint for API routes
 api_bp = Blueprint('api', __name__)
@@ -53,3 +58,15 @@ api_bp.route("/add-dish", methods=["POST"])(dish_handler)
 
 # Add cost optimization route
 api_bp.route("/optimize-cost", methods=["POST"])(optimize_cost_handler)
+
+@api_bp.route("/predict-ingredient", methods=["POST"])
+def predict_ingredient():
+    return predict_ingredient_handler()
+
+@api_bp.route("/get-graphs", methods=["GET"])
+def get_graphs():
+    return get_graphs_handler()
+
+@api_bp.route("/graphs/<path:graph_name>")
+def get_graph(graph_name):
+    return serve_graph(graph_name)

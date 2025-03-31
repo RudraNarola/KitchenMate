@@ -4,20 +4,25 @@
             "name": "pizza",
             "ingredients": {
                 "Tomato": 5,
+                "Rice": 250,
                 "Onion": 4,
                 "Garlic": 2,
-                "Carrot": 3,
-                "Rice": 0
+                "Carrot": 5,
+                "Cumin": 1,
+                "Salt": 1
             }
         },
         {
             "name": "taccobell",
             "ingredients": {
                 "Tomato": 5,
+                "Rice": 250,
                 "Onion": 4,
-                "Carrot": 3,
+                "Carrot": 5,
                 "Ginger": 2,
-                "Rice": 0
+                "Green Chilli": 4,
+                "Lemon": 3,
+                "Salt": 1
             }
         }
     ]

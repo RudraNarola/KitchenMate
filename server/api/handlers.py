@@ -1,5 +1,5 @@
 from venv import logger
-from flask import jsonify, request
+from flask import jsonify, request, send_file
 from models.SecondModule.predicit_ingredient import predict_ingredient
 from services.ai_dish_service import generate_ai_response, get_surplus_ingredients
 from utils.file_utils import save_uploaded_file
@@ -12,6 +12,8 @@ from services.daily_special import process_daily_specials
 from services.cost_effective import analyze_menu_costs
 from utils.db import db
 from bson import ObjectId
+import os
+from config.constant import GRAPH_FOLDER
 
 import json
 import numpy as np
@@ -435,6 +437,8 @@ def optimize_cost_handler():
             # Convert string IDs to ObjectId
             dish_object_ids = [ObjectId(dish_id) for dish_id in dish_ids]
             dishes = list(db.dishes.find({'_id': {'$in': dish_object_ids}}))
+            # print(dishes)
+            
         except Exception as e:
             logger.error(f"Error fetching dishes: {str(e)}")
             return jsonify({
@@ -469,5 +473,108 @@ def optimize_cost_handler():
         return jsonify({
             "success": False,
             "error": str(e)
+        }), 500
+   
+
+def predict_ingredient_handler():
+    try:
+        if "file" not in request.files:
+            return jsonify({"success": False, "message": "No file uploaded"}), 400
+
+        file = request.files["file"]
+        if file.filename == "":
+            return jsonify({"success": False, "message": "No file selected"}), 400
+
+        if not file.filename.endswith(".csv"):
+            return jsonify({"success": False, "message": "File must be a CSV"}), 400
+
+        # Save the uploaded file temporarily
+        temp_path = os.path.join(GRAPH_FOLDER, "temp_upload.csv")
+        file.save(temp_path)
+
+        # Process the file
+        results = predict_ingredient(temp_path)
+
+        # Clean up the temporary file
+        os.remove(temp_path)
+
+        return jsonify({
+            "success": True,
+            "data": results
+        })
+
+    except Exception as e:
+        logger.error(f"Error processing file: {str(e)}")
+        return jsonify({
+            "success": False,
+            "message": f"Error processing file: {str(e)}"
+        }), 500
+
+def get_graphs_handler():
+    try:
+        # Get the list of graph files
+        graph_files = {
+            "top_ingredients": [],
+            "top_meals": [],
+            "requirements": ""
+        }
+
+        print(f"Checking for graphs in: {GRAPH_FOLDER}")
+        print(f"Directory exists: {os.path.exists(GRAPH_FOLDER)}")
+        print(f"Directory contents: {os.listdir(GRAPH_FOLDER)}")
+
+        # Get top ingredient forecast graphs
+        for file in os.listdir(GRAPH_FOLDER):
+            if file.startswith("top_ingredient_forecast_"):
+                graph_files["top_ingredients"].append(file)
+                logger.info(f"Found ingredient graph: {file}")
+
+        # Get top meal forecast graphs
+        for file in os.listdir(GRAPH_FOLDER):
+            if file.startswith("top_meal_forecast_"):
+                graph_files["top_meals"].append(file)
+                logger.info(f"Found meal graph: {file}")
+
+        # Get requirements graph
+        if os.path.exists(os.path.join(GRAPH_FOLDER, "ingredient_requirements.png")):
+            graph_files["requirements"] = "ingredient_requirements.png"
+            logger.info("Found requirements graph")
+
+        logger.info(f"Returning graph files: {graph_files}")
+        return jsonify({
+            "success": True,
+            "graphs": graph_files
+        })
+
+    except Exception as e:
+        logger.error(f"Error getting graphs: {str(e)}")
+        return jsonify({
+            "success": False,
+            "message": f"Error getting graphs: {str(e)}"
+        }), 500
+
+def serve_graph(graph_name):
+    try:
+        file_path = os.path.join(GRAPH_FOLDER, graph_name)
+        logger.info(f"Serving graph: {file_path}")
+        logger.info(f"File exists: {os.path.exists(file_path)}")
+        
+        if not os.path.exists(file_path):
+            logger.error(f"Graph file not found: {file_path}")
+            return jsonify({
+                "success": False,
+                "message": "Graph file not found"
+            }), 404
+            
+        return send_file(
+            file_path,
+            mimetype="image/png",
+            as_attachment=False
+        )
+    except Exception as e:
+        logger.error(f"Error serving graph {graph_name}: {str(e)}")
+        return jsonify({
+            "success": False,
+            "message": f"Error serving graph: {str(e)}"
         }), 500
    
