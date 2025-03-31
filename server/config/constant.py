@@ -55,4 +55,4 @@ OBJECT_DETECTION_MODEL = os.path.join(
     MODELS_DIR, "weight", "FridgeVision_Dataset_detection_n_2.pt")
 
 SPOILAGE_CLASSIFIER_MODEL = os.path.join(
-    MODELS_DIR, "weight", "resnet50_fruit_spoilage.pth")
+    MODELS_DIR, "weight", "resnet50_modify_fruit_spoilage.pth")
