@@ -1,0 +1,92 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Flask
+instance/
+.webassets-cache
+.env
+.flaskenv
+
+# Virtual Environment
+venv/
+ENV/
+env/
+.venv/
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+log.txt
+
+# Local configuration
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config.local.py
+
+# Coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# Pytest
+.pytest_cache/
+
+# Documentation
+docs/_build/
+
+*.jpeg
+*.png
+*.jpg
+*.gif
+*.svg
+
+// ...existing code...
+
+# Model weights (large files)
+models/weight/
+models/weight/**/*
+models/**/*.pt
+models/**/*.pth
+
+storage/**/*
+storage/
+*.csv
