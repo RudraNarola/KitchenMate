@@ -1,31 +1,15 @@
 {
     "dishes": [
         {
-            "name": "pizza",
+            "name": "dosa",
             "ingredients": {
-                "Tomato": 5,
-                "Rice": 5,
-                "Onion": 4,
-                "Garlic": 2,
-                "Carrot": 3,
-                "Capsicum": 3,
-                "Green Chilli": 2,
-                "Cumin": 1,
-                "Salt": 1
-            }
-        },
-        {
-            "name": "taccobell",
-            "ingredients": {
-                "Tomato": 5,
-                "Rice": 5,
-                "Onion": 4,
-                "Carrot": 3,
-                "Ginger": 2,
-                "Capsicum": 3,
-                "Green Chilli": 2,
-                "Cumin": 1,
-                "Salt": 1
+                "rice": 2,
+                "tomato": 2,
+                "lentil": 2,
+                "onion": 1,
+                "green chilli": 1,
+                "ginger": 0.5,
+                "salt": 0.25
             }
         }
     ]
