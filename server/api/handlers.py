@@ -1,5 +1,6 @@
+import io
 from venv import logger
-from flask import jsonify, request
+from flask import jsonify, request, send_file
 from models.SecondModule.predicit_ingredient import predict_ingredient
 from services.ai_dish_service import generate_ai_response, get_surplus_ingredients
 from utils.file_utils import save_uploaded_file
@@ -8,10 +9,13 @@ from services.file_service import allowed_file, save_upload_file, process_excel_
 from services.menu_optimization import optimize_menu
 from services.dish_service import add_dish, get_all_dishes, get_dish, delete_dish
 from services.menu_service import analyze_image, create_menu, get_all_menus, get_menu, update_menu, delete_menu
+from config.constant import GRAPH_FOLDER
+from flask import send_from_directory
 from utils.db import db
-
+import os
 import json
 import numpy as np
+from PIL import Image
 
 # Initialize the detector service
 detector = IngredientDetector()
@@ -102,10 +106,99 @@ def health_check_handler():
 # New handlers converted from routes/api.py
 
 
+
+# Add this to your imports
+
+
+# Add this endpoint to serve images
+def serve_graph_image_handler(filename):
+    """Serve graph images from the storage folder with slight cropping from top."""
+    from config.constant import logger
+    logger.debug(f"Serving graph image: {filename}")
+    
+    # Full path to the image file
+    file_path = os.path.join(GRAPH_FOLDER, filename)
+    
+    try:
+        # Check if file exists
+        if not os.path.exists(file_path):
+            logger.error(f"Image file not found: {file_path}")
+            return "Image not found", 404
+            
+        # Open the image using Pillow
+        img = Image.open(file_path)
+        
+        # Get image dimensions
+        width, height = img.size
+        
+        # Crop from top (removing about 10% from the top)
+        crop_amount = int(height * 0.1)  # 10% of height
+        cropped_img = img.crop((0, crop_amount, width, height))
+        
+        # Save to a bytes buffer
+        img_io = io.BytesIO()
+        cropped_img.save(img_io, format=img.format or 'PNG')
+        img_io.seek(0)
+        
+        # Send the cropped image with the original mimetype
+        return send_file(
+            img_io,
+            mimetype=f'image/{img.format.lower() if img.format else "png"}',
+            as_attachment=False,
+            download_name=filename
+        )
+        
+    except Exception as e:
+        logger.error(f"Error processing image {filename}: {str(e)}")
+        # Fall back to the original file if there's an error
+        return send_from_directory(GRAPH_FOLDER, filename)
+
+def get_top_forecast_images():
+    """
+    Get paths to the top 2 meal forecast images and top 2 ingredient forecast images
+    from the graph images folder.
+    
+    Returns:
+        dict: Dictionary containing paths to top meal and ingredient forecast images
+    """
+    from config.constant import logger
+    
+    # Check if graph folder exists
+    if not os.path.exists(GRAPH_FOLDER):
+        logger.warning(f"Graph folder not found: {GRAPH_FOLDER}")
+        return {"topMealImages": [], "topIngredientImages": []}
+    
+    # Get all files from graph folder
+    files = os.listdir(GRAPH_FOLDER)
+    
+    # Filter meal forecast images (category_forecast_*)
+    meal_images = [file for file in files if file.startswith("category_forecast_")]
+    # Sort them to get consistent results
+    meal_images.sort()
+    # Get top 2 meal images
+    top_meal_images = meal_images[:2]
+    
+    # Filter ingredient forecast images (ingredient_forecast_*)
+    ingredient_images = [file for file in files if file.startswith("ingredient_forecast_")]
+    # Sort them to get consistent results
+    ingredient_images.sort()
+    # Get top 2 ingredient images
+    top_ingredient_images = ingredient_images[:2]
+    
+    # Convert file names to URLs with the proper base URL
+    base_url = "http://localhost:8080/graph_images"  # Make sure this matches your route
+    top_meal_image_urls = [f"{base_url}/{img}" for img in top_meal_images]
+    top_ingredient_image_urls = [f"{base_url}/{img}" for img in top_ingredient_images]
+    
+    logger.debug(f"Found meal images: {top_meal_image_urls}")
+    logger.debug(f"Found ingredient images: {top_ingredient_image_urls}")
+    
+    return {
+        "topMealImages": top_meal_image_urls,
+        "topIngredientImages": top_ingredient_image_urls
+    }
 def upload_file_handler():
     """Handler for Excel file uploads"""
-    from config.constant import logger
-
     from config.constant import logger
 
     if request.method == "OPTIONS":
@@ -129,18 +222,12 @@ def upload_file_handler():
         # Save and process the file
         filepath = save_upload_file(file)
         logger.debug(f"File saved to: {filepath}")
-        # print(f"File saved to")
 
         # Process the file (currently returns dummy data)
         result = predict_ingredient(filepath)
 
         logger.debug(f"Result: {result}")
         logger.debug(f"Type of result: {type(result)}")
-
-        print(result["ingredient_requirements"])
-        print(result["top_meal_details"])
-        print(type(result["top_meal_details"]))
-        print(type(result["ingredient_requirements"]))
 
         # Create a custom encoder to handle NumPy types
         class NumpyEncoder(json.JSONEncoder):
@@ -158,16 +245,24 @@ def upload_file_handler():
             result["ingredient_requirements"], cls=NumpyEncoder))
         top_meal_details = json.loads(json.dumps(
             result["top_meal_details"], cls=NumpyEncoder))
-
-        # Return the processed result
+        
+        # Get forecast graph images
+        forecast_images = get_top_forecast_images()
+        
+        # Return the processed result with forecast images
         return jsonify({
             "success": True,
             "data": {
                 "ingredient_requirements": ingredient_requirements,
-                "top_meal_details": top_meal_details
+                "top_meal_details": top_meal_details,
+                "forecast_images": forecast_images
             },
             "message": "File processed successfully"
         })
+
+    except Exception as e:
+        logger.error(f"Error processing file: {str(e)}")
+        return jsonify({"error": str(e)}), 400
 
     except Exception as e:
         logger.error(f"Error processing file: {str(e)}")
