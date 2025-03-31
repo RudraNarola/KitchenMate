@@ -169,7 +169,7 @@ const Home: React.FC = () => {
     }
   }, []);
 
-  // Start camera with selected device
+  // Start camera with selected device  
   const startCamera = async () => {
     // Check if we're in a browser environment and mediaDevices is available
     if (typeof window === 'undefined' || !window.navigator?.mediaDevices) {
@@ -178,7 +178,7 @@ const Home: React.FC = () => {
     }
 
     try {
-      // Stop any existing stream
+      // Stop any existing stream 
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop());
       }
