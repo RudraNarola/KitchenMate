@@ -133,20 +133,6 @@ export function MenuList() {
               <div className="flex items-center space-x-2">
                 <Button
                   variant="ghost"
-                  size="sm"
-                  onClick={() => handleOptimizeMenu(menu)}
-                  disabled={optimizingMenuId === menu._id}
-                  className="text-purple-400 hover:text-purple-300"
-                >
-                  {optimizingMenuId === menu._id ? (
-                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                  ) : (
-                    <Sparkles className="h-4 w-4 mr-2" />
-                  )}
-                  Optimize
-                </Button>
-                <Button
-                  variant="ghost"
                   size="icon"
                   onClick={() => handleDeleteMenu(menu._id)}
                   className="text-gray-400 hover:text-red-400"

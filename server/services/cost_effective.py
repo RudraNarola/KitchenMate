@@ -118,7 +118,7 @@ def analyze_menu_costs(menu_dishes: List[Dict[str, Any]]) -> Dict[str, Any]:
             # Create a map of ingredient prices
             price_map = {item['ingredient']: item['price_per_kg'] for item in ingredient_prices}
 
-            print(price_map)
+            # print(price_map)
             
             # Calculate costs for each dish
             for dish_name, dish_data in dishes_map.items():
@@ -131,7 +131,6 @@ def analyze_menu_costs(menu_dishes: List[Dict[str, Any]]) -> Dict[str, Any]:
                 
                 dishes_map[dish_name]['total_cost'] = dish_cost
                 total_current_cost += dish_cost
-            
             # Print the dishes map structure with costs
         except json.JSONDecodeError as e:
             print(f"Error parsing Gemini response: {e}")

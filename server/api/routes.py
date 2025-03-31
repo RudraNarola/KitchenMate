@@ -1,5 +1,4 @@
-# filepath: /Users/jaivik/Downloads/mit-main/server/api/routes.py
-from flask import Blueprint, request, jsonify, send_file
+from flask import Blueprint
 from api.handlers import (
     analyze_image_handler,
     dish_generation_handler,
@@ -14,14 +13,10 @@ from api.handlers import (
     menu_handler,
     menu_detail_handler,
     dish_delete_handler,
-    daily_specials_handler,
+    serve_graph_image_handler,
     optimize_cost_handler,
-    predict_ingredient_handler,
-    get_graphs_handler,
-    serve_graph
+    daily_specials_handler  # Add this import
 )
-import os
-from config.constant import GRAPH_FOLDER
 
 # Create a blueprint for API routes
 api_bp = Blueprint('api', __name__)
@@ -33,6 +28,7 @@ api_bp.route("/upload_video", methods=["POST"])(upload_video_handler)
 
 # Define routes for CSV data processing
 api_bp.route("/upload_csv", methods=["POST", "OPTIONS"])(upload_file_handler)
+
 api_bp.route("/optimize-menu", methods=["POST"])(optimize_menu_handler)
 
 # Define routes for dishes
@@ -46,8 +42,8 @@ api_bp.route("/menus", methods=["GET", "POST"])(menu_handler)
 api_bp.route("/menus/<menu_id>", methods=["GET", "PUT", "DELETE"])(menu_detail_handler)
 api_bp.route('/analyze-image', methods=['POST'])(analyze_image_handler)
 
-# Add daily specials route
-api_bp.route("/daily_specials", methods=["POST"])(daily_specials_handler)
+# Route to serve graph images
+api_bp.route('/graph_images/<filename>')(serve_graph_image_handler)
 
 # Health check
 api_bp.route("/health", methods=["GET"])(health_check_handler)
@@ -58,6 +54,9 @@ api_bp.route("/add-dish", methods=["POST"])(dish_handler)
 
 # Add cost optimization route
 api_bp.route("/optimize-cost", methods=["POST"])(optimize_cost_handler)
+
+# Add daily specials route
+api_bp.route("/daily_specials", methods=["POST", "OPTIONS"])(daily_specials_handler)
 
 @api_bp.route("/predict-ingredient", methods=["POST"])
 def predict_ingredient():

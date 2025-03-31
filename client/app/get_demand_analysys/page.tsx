@@ -7,9 +7,13 @@ import DataTable from "@/components/demand/DataTable";
 import ForecastDashboard from "@/components/demand/ForecastDashboard";
 import useFileUpload from "@/hooks/useFileUpload";
 
+// Utility function to capitalize the first letter of a string
+const capitalizeFirstLetter = (string: string): string => {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 export default function DemandPage() {
   const [activePage, setActivePage] = useState("get_demand_analysys");
-  
   const {
     file,
     data,
@@ -46,6 +50,10 @@ export default function DemandPage() {
     name: String(item[0]),
     quantity: Number(item[1])
   })) || [];
+
+  // Extract meal and ingredient names for the graphs and capitalize first letter
+  const mealNames = predictedMeals.map(meal => capitalizeFirstLetter(meal.name));
+  const ingredientNames = ingredientRequirements.map(ing => capitalizeFirstLetter(ing.name));
 
   return (
     <div className="min-h-screen bg-black text-gray-200">
@@ -88,6 +96,10 @@ export default function DemandPage() {
             <ForecastDashboard
               predictedMeals={predictedMeals}
               ingredientRequirements={ingredientRequirements}
+              topMealImages={forecastData?.forecast_images?.topMealImages}
+              topIngredientImages={forecastData?.forecast_images?.topIngredientImages}
+              mealNames={mealNames}
+              ingredientNames={ingredientNames}
             />
           </div>
         )}

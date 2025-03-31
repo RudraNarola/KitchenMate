@@ -18,7 +18,7 @@ export default function IngredientForecastCard({ ingredients }: IngredientForeca
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState<"quantity" | "name">("quantity");
   const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(5);
   
   // Filter and sort ingredients
   const filteredIngredients = [...ingredients]
@@ -144,7 +144,7 @@ export default function IngredientForecastCard({ ingredients }: IngredientForeca
               onValueChange={handleItemsPerPageChange}
             >
               <SelectTrigger className="w-[80px] h-8 py-0 pl-2 pr-1 bg-gray-800 border-gray-700 text-gray-300">
-                <SelectValue placeholder="10" />
+                <SelectValue placeholder="5" />
               </SelectTrigger>
               <SelectContent className="bg-gray-800 border-gray-700 text-gray-300">
                 <SelectItem value="5">5</SelectItem>

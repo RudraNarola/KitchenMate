@@ -12,9 +12,15 @@ export type DataItem = {
 type IngredientRequirement = [string, number];
 type MealPrediction = [number, string, string, number];
 
+type ForecastImages = {
+  topMealImages: string[];
+  topIngredientImages: string[];
+};
+
 type ForecastData = {
   ingredient_requirements: IngredientRequirement[];
   top_meal_details: MealPrediction[];
+  forecast_images?: ForecastImages;
 };
 
 export default function useFileUpload() {
@@ -40,15 +46,15 @@ export default function useFileUpload() {
       setError("Please select a file to upload");
       return;
     }
-
+  
     setLoading(true);
     setError("");
-
+  
     const formData = new FormData();
     formData.append("file", file);
     formData.append("date", new Date().toISOString().split("T")[0]);
     if (season) formData.append("season", season);
-
+  
     try {
       const response = await axios.post(
         "http://localhost:8080/upload_csv",
@@ -57,7 +63,9 @@ export default function useFileUpload() {
           headers: { "Content-Type": "multipart/form-data" },
         }
       );
-
+  
+      console.log("API Response:", response.data); // Log the response for debugging
+  
       // Handle historical consumption data
       if (response.data.consumption_data) {
         setData(response.data.consumption_data);
@@ -65,19 +73,21 @@ export default function useFileUpload() {
         // Fallback if the API returns direct array
         setData(response.data);
       }
-
-      // Handle forecast data
+  
+      // Handle forecast data and images
       if (response.data.ingredient_requirements && response.data.top_meal_details) {
         setForecastData({
           ingredient_requirements: response.data.ingredient_requirements,
-          top_meal_details: response.data.top_meal_details
+          top_meal_details: response.data.top_meal_details,
+          forecast_images: response.data.forecast_images
         });
       }
       // Handle nested data structure
       else if (response.data.data && response.data.data.ingredient_requirements) {
         setForecastData({
           ingredient_requirements: response.data.data.ingredient_requirements,
-          top_meal_details: response.data.data.top_meal_details
+          top_meal_details: response.data.data.top_meal_details,
+          forecast_images: response.data.data.forecast_images
         });
       }
     } catch (error: any) {
@@ -93,6 +103,7 @@ export default function useFileUpload() {
       setLoading(false);
     }
   }, [file, season]);
+
 
   return {
     file,
