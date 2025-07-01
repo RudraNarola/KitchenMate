@@ -6,8 +6,7 @@ A smart kitchen management system that helps restaurants optimize their operatio
 
 ## 🚀 Demo
 
-[![KitchenMate Demo](https://img.youtube.com/vi/89Gi5ZIAQ8c/0.jpg)](https://www.youtube.com/watch?v=89Gi5ZIAQ8c)  
-👉 **[Watch the Demo on YouTube](https://www.youtube.com/watch?v=89Gi5ZIAQ8c)**
+https://github.com/user-attachments/assets/2acdb22b-4c35-4356-b546-ea8d01f624a6
 
 ---
 
