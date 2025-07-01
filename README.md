@@ -2,6 +2,15 @@
 
 A smart kitchen management system that helps restaurants optimize their operations using AI.
 
+---
+
+## 🚀 Demo
+
+[![KitchenMate Demo](https://img.youtube.com/vi/89Gi5ZIAQ8c/0.jpg)](https://www.youtube.com/watch?v=89Gi5ZIAQ8c)  
+👉 **[Watch the Demo on YouTube](https://www.youtube.com/watch?v=89Gi5ZIAQ8c)**
+
+---
+
 ## What is KitchenMate?
 
 KitchenMate is a modern web application that helps restaurant owners and kitchen managers make better decisions using artificial intelligence. It provides tools for menu optimization, cost management, and ingredient tracking.
@@ -100,13 +109,13 @@ KitchenMate/
 ├── client/                 # Frontend application
 │   ├── app/               # Next.js app directory
 │   ├── components/        # Reusable UI components
-│   └── hooks/            # Custom React hooks
+│   └── hooks/             # Custom React hooks
 │
-└── server/               # Backend application
-    ├── api/             # API endpoints
-    ├── models/          # Database models
-    ├── services/        # Business logic
-    └── utils/           # Utility functions
+└── server/                # Backend application
+    ├── api/               # API endpoints
+    ├── models/            # Database models
+    ├── services/          # Business logic
+    └── utils/             # Utility functions
 ```
 
 ## Contributing
